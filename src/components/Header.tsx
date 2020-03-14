@@ -16,17 +16,25 @@ const Container = styled.div`
   display: flex;
 `;
 
+const getMainImage = (gameState: GameState) => {
+  switch (gameState) {
+    case 'lost':
+    case 'lost-quarantine':
+      return 'fail';
+    case 'won':
+      return 'success';
+    default:
+      return 'inprogress';
+  }
+};
+
 const Header: FunctionComponent<Props> = ({ gameState, stress }) => {
   const stressed = stress || gameState === 'lost' || gameState === 'lost-quarantine';
-
-  const handleRestart = useCallback(() => {
-    window.location.reload();
-  }, []);
 
   return (
     <Container>
       <img src={`/images/nurse-${stressed ? 'stress' : 'normal'}.png`} alt="" />
-      {gameState}
+      <img src={`/images/${getMainImage(gameState)}.png`} alt="" />
     </Container>
   );
 };

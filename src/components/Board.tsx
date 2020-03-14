@@ -41,6 +41,7 @@ const Board: FunctionComponent<Props> = ({
       {items.map(item => (
         <Cell
           key={item.position}
+          gameState={gameState}
           item={item}
           onClick={onCellClick}
           onContextClick={onContextClick}

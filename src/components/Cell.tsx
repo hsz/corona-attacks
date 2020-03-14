@@ -1,12 +1,13 @@
 import config from 'config';
 import React, { FunctionComponent, useCallback } from 'react';
-import { Item } from 'types';
+import { GameState, Item } from 'types';
 import { styled } from 'utils';
 
 interface Props {
   item: Item;
   onClick: (item: Item) => void;
   onContextClick: (item: Item) => void;
+  gameState: GameState;
 }
 
 const Container = styled.div`
@@ -22,8 +23,11 @@ const Container = styled.div`
   }
 `;
 
-const getIcon = ({ isRevealed, isVirus, isUnderQuarantine, isCure, hint }: Item) => {
-  if (!isRevealed) {
+const getIcon = (
+  { isRevealed, isVirus, isUnderQuarantine, isCure, hint }: Item,
+  gameState: GameState,
+) => {
+  if (!isRevealed && gameState === 'ongoing') {
     return 'untouched';
   }
   if (isUnderQuarantine) {
@@ -39,18 +43,21 @@ const getIcon = ({ isRevealed, isVirus, isUnderQuarantine, isCure, hint }: Item)
   return hint;
 };
 
-const Cell: FunctionComponent<Props> = ({ item, onClick, onContextClick }) => {
+const Cell: FunctionComponent<Props> = ({ gameState, item, onClick, onContextClick }) => {
   const handleOnClick = useCallback(() => {
     onClick(item);
   }, [item, onClick]);
-  const handleOnContextClick = useCallback((e) => {
-    e.preventDefault();
-    onContextClick(item);
-  }, [item, onContextClick]);
+  const handleOnContextClick = useCallback(
+    e => {
+      e.preventDefault();
+      onContextClick(item);
+    },
+    [item, onContextClick],
+  );
 
   return (
     <Container onClick={handleOnClick} onContextMenu={handleOnContextClick}>
-      <img src={`/images/${getIcon(item)}.png`} alt="" />
+      <img src={`/images/${getIcon(item, gameState)}.png`} alt="" />
     </Container>
   );
 };

@@ -14,6 +14,8 @@ export interface Item {
   isUnderQuarantine?: boolean;
 }
 
+export type GameState = 'ongoing' | 'won' | 'lost' | 'lost-quarantine';
+
 declare module '*.svg' {
   const content: any;
   export const ReactComponent: any;

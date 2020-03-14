@@ -1,7 +1,7 @@
 import { Cell, Header, Splash } from 'components';
 import config from 'config';
 import React, { FunctionComponent, useCallback, useState } from 'react';
-import { Item } from 'types';
+import { GameState, Item } from 'types';
 import { styled } from 'utils';
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
   onCellClick: (item: Item) => void;
   onContextClick: (item: Item) => void;
   items: Item[];
+  gameState: GameState;
 }
 
 const Container = styled.div`
@@ -18,7 +19,13 @@ const Container = styled.div`
   font-size: 0;
 `;
 
-const Board: FunctionComponent<Props> = ({ counter, items, onCellClick, onContextClick }) => {
+const Board: FunctionComponent<Props> = ({
+  counter,
+  gameState,
+  items,
+  onCellClick,
+  onContextClick,
+}) => {
   const [stress, setStress] = useState(false);
   const handleMouseDown = useCallback(() => {
     setStress(true);
@@ -30,7 +37,7 @@ const Board: FunctionComponent<Props> = ({ counter, items, onCellClick, onContex
   return (
     <Container onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
       <Splash />
-      <Header counter={counter} stress={stress} />
+      <Header counter={counter} stress={stress} gameState={gameState} />
       {items.map(item => (
         <Cell
           key={item.position}

@@ -1,9 +1,9 @@
 import { Board } from 'components';
 import config from 'config';
 import { range, shuffle } from 'lodash';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'ress';
-import { Item } from 'types';
+import { GameState, Item } from 'types';
 import { styled } from 'utils';
 
 const Container = styled.div`
@@ -77,6 +77,13 @@ const spreadDisease = (counter: number) => {
 
 const App = () => {
   const [counter, setCounter] = useState(0);
+  const [gameState, setGameState] = useState<GameState>('ongoing');
+
+  useEffect(() => {
+    if (gameState !== 'ongoing') {
+      revealMap();
+    }
+  }, [gameState]);
 
   const processClick = useCallback(
     (item: Item, callback: () => void) => {
@@ -96,9 +103,11 @@ const App = () => {
   const handleCellClick = useCallback(
     (item: Item) => {
       processClick(item, () => {
-        if (item.isVirus || item.isCure) {
-          alert(item.isVirus ? 'Game over' : 'You won');
-          revealMap();
+        if (item.isVirus) {
+          setGameState('lost');
+        }
+        if (item.isCure) {
+          setGameState('won');
         }
       });
     },
@@ -111,8 +120,7 @@ const App = () => {
         if (item.isVirus) {
           item.isUnderQuarantine = true;
         } else {
-          alert('Killed patient');
-          revealMap();
+          setGameState('lost-quarantine');
         }
       });
     },
@@ -122,6 +130,7 @@ const App = () => {
   return (
     <Container>
       <Board
+        gameState={gameState}
         counter={counter}
         items={items}
         onCellClick={handleCellClick}

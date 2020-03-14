@@ -6,6 +6,7 @@ import { styled } from 'utils';
 
 interface Props {
   onCellClick: (item: Item) => void;
+  onContextClick: (item: Item) => void;
   items: Item[];
 }
 
@@ -15,7 +16,7 @@ const Container = styled.div`
   font-size: 0;
 `;
 
-const Board: FunctionComponent<Props> = ({ items, onCellClick }) => {
+const Board: FunctionComponent<Props> = ({ items, onCellClick, onContextClick }) => {
   const getType = (item: Item): CellType => {
     if (!item.isRevealed) {
       return 'untouched';
@@ -32,7 +33,13 @@ const Board: FunctionComponent<Props> = ({ items, onCellClick }) => {
   return (
     <Container>
       {items.map(item => (
-        <Cell key={item.position} item={item} onClick={onCellClick} type={getType(item)} />
+        <Cell
+          key={item.position}
+          item={item}
+          onClick={onCellClick}
+          onContextClick={onContextClick}
+          type={getType(item)}
+        />
       ))}
     </Container>
   );

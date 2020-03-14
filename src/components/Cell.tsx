@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useCallback } from 'react';
 import { CellType, Item } from 'types';
 import { styled } from 'utils';
 import config from 'config';
@@ -7,6 +7,7 @@ interface Props {
   item: Item;
   type: CellType;
   onClick: (item: Item) => void;
+  onContextClick: (item: Item) => void;
 }
 
 const icons: {
@@ -31,8 +32,19 @@ const Container = styled.div`
   }
 `;
 
-const Cell: FunctionComponent<Props> = ({ item, type, onClick }) => (
-  <Container onClick={() => onClick(item)}>{icons[type] || item.hint}</Container>
-);
+const Cell: FunctionComponent<Props> = ({ item, type, onClick, onContextClick }) => {
+  const handleOnClick = useCallback(() => {
+    onClick(item);
+  }, [item, onClick]);
+  const handleOnContextClick = useCallback(() => {
+    onContextClick(item);
+  }, [item, onContextClick]);
+
+  return (
+    <Container onClick={handleOnClick} onContextMenu={handleOnContextClick}>
+      {icons[type] || item.hint}
+    </Container>
+  );
+};
 
 export default Cell;

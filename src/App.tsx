@@ -1,6 +1,6 @@
 import { Board, Timer } from 'components';
 import config from 'config';
-import { range, shuffle, first } from 'lodash';
+import { range, shuffle } from 'lodash';
 import React, { useCallback, useState } from 'react';
 import 'ress';
 import { Item } from 'types';
@@ -55,47 +55,71 @@ const getNeighbours = (item: Item | undefined): Item[] => {
     .map(i => items[i]);
 };
 
+const revealMap = () =>
+  items.forEach(item => {
+    item.isRevealed = true;
+  });
+
+const spreadDisease = (counter: number) => {
+  if (counter > config.spreadAfter) {
+    const potentialVirus = shuffle(getNeighbours(shuffle(items).find(it => it.isVirus))).find(
+      it => !it.isRevealed && !it.isCure && !it.isVirus,
+    );
+    if (potentialVirus) {
+      potentialVirus.isVirus = true;
+    }
+  }
+
+  items.forEach(it => {
+    it.hint = getNeighbours(it).reduce((acc, v) => acc + +v.isVirus, 0);
+  });
+};
+
 const App = () => {
   const [counter, setCounter] = useState(0);
 
-  const handleCellClick = useCallback(
-    (item: Item) => {
-      if (!item.isRevealed) {
-        setCounter(counter + 1);
-        item.isRevealed = true;
-
-        if (item.isVirus || item.isCure) {
-          alert(item.isVirus ? 'Game over' : 'You won');
-          items.forEach(item => {
-            item.isRevealed = true;
-          });
-          return;
-        }
-        if (counter > config.spreadAfter) {
-          const potentialVirus = shuffle(getNeighbours(shuffle(items).find(it => it.isVirus))).find(
-            it => !it.isRevealed && !it.isCure && !it.isVirus,
-          );
-          if (potentialVirus) {
-            potentialVirus.isVirus = true;
-          }
-        }
+  const processClick = useCallback(
+    (item: Item, callback: () => void) => {
+      if (item.isRevealed) {
+        return;
       }
 
-      items.forEach(it => {
-        it.hint = getNeighbours(it).reduce((acc, v) => acc + +v.isVirus, 0);
-      });
+      callback();
 
-      // getNeighbours(item).map(neighbour => {
-      //   neighbour.hint = getNeighbours(neighbour).reduce((acc, v) => acc + +v.isVirus, 0);
-      // });
-      console.log('getNeighbours(item)', getNeighbours(item));
+      setCounter(counter + 1);
+      item.isRevealed = true;
+      spreadDisease(counter);
     },
     [counter],
   );
 
+  const handleCellClick = useCallback(
+    (item: Item) => {
+      processClick(item, () => {
+        if (item.isVirus || item.isCure) {
+          alert(item.isVirus ? 'Game over' : 'You won');
+          revealMap();
+        }
+      });
+    },
+    [processClick],
+  );
+
+  const handleCellContextClick = useCallback(
+    (item: Item) => {
+      processClick(item, () => {
+        if (!item.isVirus) {
+          alert('Killed patient');
+          revealMap();
+        }
+      });
+    },
+    [processClick],
+  );
+
   return (
     <Container>
-      <Board items={items} onCellClick={handleCellClick} />
+      <Board items={items} onCellClick={handleCellClick} onContextClick={handleCellContextClick} />
       <Timer counter={counter} />
     </Container>
   );

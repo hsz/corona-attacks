@@ -2,6 +2,7 @@ export interface Config {
   size: number;
   rows: number;
   cols: number;
+  spreadAfter: number;
 }
 
 export interface Item {
@@ -9,6 +10,7 @@ export interface Item {
   isVirus: boolean;
   isCure: boolean;
   isRevealed?: boolean;
+  hint: number;
 }
 
 export type CellType = 'empty' | 'untouched' | 'virus' | 'cure';

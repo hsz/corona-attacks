@@ -1,6 +1,6 @@
 import { Board, Timer } from 'components';
 import config from 'config';
-import { range, shuffle } from 'lodash';
+import { range, shuffle, first } from 'lodash';
 import React, { useCallback, useState } from 'react';
 import 'ress';
 import { Item } from 'types';
@@ -15,17 +15,47 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const items = ((max = config.rows * config.cols) => {
+const items: Item[] = ((max = config.rows * config.cols) => {
   const [virusA, virusB, cure] = shuffle(range(max));
   return range(max).map(i => ({
     position: i,
     isVirus: i === virusA || i === virusB,
     isCure: i === cure,
+    hint: 0,
   }));
 })();
 
+const getNeighbours = (item: Item | undefined): Item[] => {
+  if (!item) {
+    return [];
+  }
+  const { cols, rows } = config;
+  const { position } = item;
+
+  const positions = [
+    position - 1,
+    position + 1,
+    position - 1 - cols,
+    position - cols,
+    position - cols + 1,
+    position + cols - 1,
+    position + cols,
+    position + cols + 1,
+  ];
+  return positions
+    .filter(
+      v =>
+        !(
+          v < 0 ||
+          v >= cols * rows ||
+          (position % cols === 0 && v % cols === cols - 1) ||
+          (position % cols === 9 && v % cols === 0)
+        ),
+    )
+    .map(i => items[i]);
+};
+
 const App = () => {
-  console.log('RENDER');
   const [counter, setCounter] = useState(0);
 
   const handleCellClick = useCallback(
@@ -33,7 +63,32 @@ const App = () => {
       if (!item.isRevealed) {
         setCounter(counter + 1);
         item.isRevealed = true;
+
+        if (item.isVirus || item.isCure) {
+          alert(item.isVirus ? 'Game over' : 'You won');
+          items.forEach(item => {
+            item.isRevealed = true;
+          });
+          return;
+        }
+        if (counter > config.spreadAfter) {
+          const potentialVirus = shuffle(getNeighbours(shuffle(items).find(it => it.isVirus))).find(
+            it => !it.isRevealed && !it.isCure && !it.isVirus,
+          );
+          if (potentialVirus) {
+            potentialVirus.isVirus = true;
+          }
+        }
       }
+
+      items.forEach(it => {
+        it.hint = getNeighbours(it).reduce((acc, v) => acc + +v.isVirus, 0);
+      });
+
+      // getNeighbours(item).map(neighbour => {
+      //   neighbour.hint = getNeighbours(neighbour).reduce((acc, v) => acc + +v.isVirus, 0);
+      // });
+      console.log('getNeighbours(item)', getNeighbours(item));
     },
     [counter],
   );

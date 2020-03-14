@@ -12,7 +12,7 @@ interface Props {
 const icons: {
   [key in CellType]: string;
 } = {
-  empty: '␀',
+  empty: '',
   untouched: '❓',
   virus: '🦠',
   cure: '💉',
@@ -32,7 +32,7 @@ const Container = styled.div`
 `;
 
 const Cell: FunctionComponent<Props> = ({ item, type, onClick }) => (
-  <Container onClick={() => onClick(item)}>{icons[type]}</Container>
+  <Container onClick={() => onClick(item)}>{icons[type] || item.hint}</Container>
 );
 
 export default Cell;

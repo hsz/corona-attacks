@@ -1,5 +1,5 @@
 import config from 'config';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useCallback } from 'react';
 import { GameState } from 'types';
 import { styled } from 'utils';
 
@@ -16,11 +16,19 @@ const Container = styled.div`
   display: flex;
 `;
 
-const Header: FunctionComponent<Props> = ({ gameState, stress }) => (
-  <Container>
-    <img src={`/images/nurse-${stress ? 'stress' : 'normal'}.png`} alt="" />
-    {gameState}
-  </Container>
-);
+const Header: FunctionComponent<Props> = ({ gameState, stress }) => {
+  const stressed = stress || gameState === 'lost' || gameState === 'lost-quarantine';
+
+  const handleRestart = useCallback(() => {
+    window.location.reload();
+  }, []);
+
+  return (
+    <Container>
+      <img src={`/images/nurse-${stressed ? 'stress' : 'normal'}.png`} alt="" />
+      {gameState}
+    </Container>
+  );
+};
 
 export default Header;

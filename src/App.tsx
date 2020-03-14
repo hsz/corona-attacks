@@ -1,4 +1,4 @@
-import { Board, Timer } from 'components';
+import { Board } from 'components';
 import config from 'config';
 import { range, shuffle } from 'lodash';
 import React, { useCallback, useState } from 'react';
@@ -121,8 +121,12 @@ const App = () => {
 
   return (
     <Container>
-      <Board items={items} onCellClick={handleCellClick} onContextClick={handleCellContextClick} />
-      <Timer counter={counter} />
+      <Board
+        counter={counter}
+        items={items}
+        onCellClick={handleCellClick}
+        onContextClick={handleCellContextClick}
+      />
     </Container>
   );
 };

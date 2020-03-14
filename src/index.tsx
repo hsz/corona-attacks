@@ -9,6 +9,7 @@ const globalStyles = css`
   body,
   html {
     height: 100%;
+    background-color: #181425;
   }
 `;
 

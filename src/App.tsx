@@ -108,7 +108,9 @@ const App = () => {
   const handleCellContextClick = useCallback(
     (item: Item) => {
       processClick(item, () => {
-        if (!item.isVirus) {
+        if (item.isVirus) {
+          item.isUnderQuarantine = true;
+        } else {
           alert('Killed patient');
           revealMap();
         }

@@ -7,13 +7,12 @@ export interface Config {
 
 export interface Item {
   position: number;
+  hint: number;
   isVirus: boolean;
   isCure: boolean;
   isRevealed?: boolean;
-  hint: number;
+  isUnderQuarantine?: boolean;
 }
-
-export type CellType = 'empty' | 'untouched' | 'virus' | 'cure';
 
 declare module '*.svg' {
   const content: any;

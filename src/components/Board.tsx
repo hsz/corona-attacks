@@ -1,7 +1,7 @@
 import { Cell } from 'components';
 import config from 'config';
 import React, { FunctionComponent } from 'react';
-import { CellType, Item } from 'types';
+import { Item } from 'types';
 import { styled } from 'utils';
 
 interface Props {
@@ -16,33 +16,12 @@ const Container = styled.div`
   font-size: 0;
 `;
 
-const Board: FunctionComponent<Props> = ({ items, onCellClick, onContextClick }) => {
-  const getType = (item: Item): CellType => {
-    if (!item.isRevealed) {
-      return 'untouched';
-    }
-    if (item.isVirus) {
-      return 'virus';
-    }
-    if (item.isCure) {
-      return 'cure';
-    }
-    return 'empty';
-  };
-
-  return (
-    <Container>
-      {items.map(item => (
-        <Cell
-          key={item.position}
-          item={item}
-          onClick={onCellClick}
-          onContextClick={onContextClick}
-          type={getType(item)}
-        />
-      ))}
-    </Container>
-  );
-};
+const Board: FunctionComponent<Props> = ({ items, onCellClick, onContextClick }) => (
+  <Container>
+    {items.map(item => (
+      <Cell key={item.position} item={item} onClick={onCellClick} onContextClick={onContextClick} />
+    ))}
+  </Container>
+);
 
 export default Board;

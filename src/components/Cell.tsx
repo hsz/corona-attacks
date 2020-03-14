@@ -1,23 +1,13 @@
-import React, { FunctionComponent, useCallback } from 'react';
-import { CellType, Item } from 'types';
-import { styled } from 'utils';
 import config from 'config';
+import React, { FunctionComponent, useCallback } from 'react';
+import { Item } from 'types';
+import { styled } from 'utils';
 
 interface Props {
   item: Item;
-  type: CellType;
   onClick: (item: Item) => void;
   onContextClick: (item: Item) => void;
 }
-
-const icons: {
-  [key in CellType]: string;
-} = {
-  empty: '',
-  untouched: '❓',
-  virus: '🦠',
-  cure: '💉',
-};
 
 const Container = styled.div`
   width: ${config.size}px;
@@ -32,7 +22,24 @@ const Container = styled.div`
   }
 `;
 
-const Cell: FunctionComponent<Props> = ({ item, type, onClick, onContextClick }) => {
+const getIcon = ({ isRevealed, isVirus, isUnderQuarantine, isCure, hint }: Item) => {
+  if (!isRevealed) {
+    return 'untouched';
+  }
+  if (isUnderQuarantine) {
+    return 'quarantine';
+  }
+  if (isVirus) {
+    return 'virus';
+  }
+  if (isCure) {
+    return 'cure';
+  }
+
+  return hint;
+};
+
+const Cell: FunctionComponent<Props> = ({ item, onClick, onContextClick }) => {
   const handleOnClick = useCallback(() => {
     onClick(item);
   }, [item, onClick]);
@@ -42,7 +49,7 @@ const Cell: FunctionComponent<Props> = ({ item, type, onClick, onContextClick })
 
   return (
     <Container onClick={handleOnClick} onContextMenu={handleOnContextClick}>
-      {icons[type] || item.hint}
+      <img src={`/images/${getIcon(item)}.png`} alt="" />
     </Container>
   );
 };

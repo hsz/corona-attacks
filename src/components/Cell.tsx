@@ -43,7 +43,8 @@ const Cell: FunctionComponent<Props> = ({ item, onClick, onContextClick }) => {
   const handleOnClick = useCallback(() => {
     onClick(item);
   }, [item, onClick]);
-  const handleOnContextClick = useCallback(() => {
+  const handleOnContextClick = useCallback((e) => {
+    e.preventDefault();
     onContextClick(item);
   }, [item, onContextClick]);
 

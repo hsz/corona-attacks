@@ -1,6 +1,7 @@
 import { Board } from 'components';
 import config from 'config';
-import { range, shuffle } from 'lodash';
+import range from 'lodash/range';
+import shuffle from 'lodash/shuffle';
 import React, { useCallback, useEffect, useState } from 'react';
 import 'ress';
 import { GameState, Item } from 'types';

@@ -1,2 +1,3 @@
-# hack-the-beer
+# Corona Attacks
+
 Hack the Beer

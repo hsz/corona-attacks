@@ -10,6 +10,7 @@ const globalStyles = css`
   html {
     height: 100%;
     background-color: #181425;
+    user-select: none;
   }
 `;
 

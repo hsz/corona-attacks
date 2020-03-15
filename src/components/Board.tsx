@@ -1,4 +1,4 @@
-import { Cell, Header, Splash } from 'components';
+import { Cell, Footer, Header, Splash } from 'components';
 import config from 'config';
 import React, { FunctionComponent, useCallback, useState } from 'react';
 import { GameState, Item } from 'types';
@@ -46,6 +46,7 @@ const Board: FunctionComponent<Props> = ({
           onContextClick={onContextClick}
         />
       ))}
+      <Footer />
     </Container>
   );
 };

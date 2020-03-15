@@ -1,7 +1,7 @@
 import { Config } from 'types';
 
 const config: Config = {
-  size: 48,
+  size: 32,
   rows: 10,
   cols: 10,
   spreadAfter: 5,

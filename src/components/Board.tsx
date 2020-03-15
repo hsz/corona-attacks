@@ -15,7 +15,6 @@ interface Props {
 const Container = styled.div`
   position: relative;
   width: ${config.cols * config.size}px;
-  height: ${config.rows * config.size}px;
   font-size: 0;
 `;
 
